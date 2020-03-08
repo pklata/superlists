@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+import time
 
 DEVELOPMENT_URL = 'http://127.0.0.1:8000/'
 
@@ -15,42 +16,60 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.quit()
 
     def test_can_start_a_list_and_retrieve_it_later(self):
-        # Edyta dowiedziaa si o nowej wspaniaej aplikacji w postaci listy rzeczy do zrobienia
-        # postanowila przejsc na ston gwnej applikacji
+        # Edith has heard about a cool new online to-do app. She goes
+        # to check out its homepage
         self.browser.get(f'{DEVELOPMENT_URL}')
 
-        # Zwróciła uwagę, że  tytuł strony i nagłówek zawierają słowo listy
-        self.assertIn('Listy', self.browser.title)
+        # She notices the page title and header mention to-do lists
+        self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('lista', header_text)
+        self.assertIn('to-do', header_text)
 
-        # Od razu zostaje zachęcona, aby wpisać rzecz do zrobienia
+        # She is invited to enter a to-do item straight away
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
-            'Wpisz rzecz do zrobienia'
+            'Enter a to-do item'
         )
 
-        # W polu tekstowym wpisałą kupić pawie pióra
-        inputbox.send_keys('Kupić pawie pióra')
+        # She types "Buy peacock feathers" into a text box (Edith's hobby
+        # is tying fly-fishing lures)
+        inputbox.send_keys('Buy peacock feathers')
 
-        # Po wciśnięciu klawisza Enter strona zostąła uaktualniona i wyświetla
-        # 1: Kupić pawie pióra jako element listy rzeczy do zrobienia
+        # When she hits enter, the page updates, and now the page lists
+        # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
+
+        time.sleep(1)
+
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Kupić pawie pióra' for row in rows),
-            "Nowy element nie znajduje si w tabeli"
-        )
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
-        # Na stronie nadal znajduje się pole tekstowe zachęcające do podania kolejnego zadania
-        # Edyta wpisałą 'Użyć pawich piór do zrobienia przynęty
-        self.fail(('Zakończenie testu'))
+        # There is still a text box inviting her to add another item. She
+        # enters "Use peacock feathers to make a fly" (Edith is very methodical)
 
-        # Strona została ponownie uaktualniona i teraz wyświetla dwa elementy na liście rzeczy do zrobienia
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
 
-        # Usatysfakcjonowana kładzie się spać
+        time.sleep(1)
+
+        # The page updates again, and now shows both items on her list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+
+        # Edith wonders whether the site will remember her list. Then she sees
+        # that the site has generated a unique URL for her -- there is some
+        # explanatory text to that effect.
+
+        # She visits that URL - her to-do list is still there.
+
+        # Satisfied, she goes back to sleep
+
+        self.fail('Finish the test!')
 
 
 if __name__ == '__main__':
