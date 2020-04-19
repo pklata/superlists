@@ -1,0 +1,7 @@
+db.sqlite3
+geckodriver.log
+venv
+.idea
+/static
+db.sqlite3
+.env
