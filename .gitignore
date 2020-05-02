@@ -6,3 +6,4 @@ venv
 db.sqlite3
 .env
 /functional_tests/.env
+/superlists/.env
