@@ -7,6 +7,7 @@ from .base import FunctionalTest
 TEST_EMAIL = 'pawelklata@gmail.com'
 SUBJECT = 'Your login link to Superlists'
 
+
 class LoginTest(FunctionalTest):
 
     def test_con_get_email_link_to_log_in(self):
@@ -32,7 +33,7 @@ class LoginTest(FunctionalTest):
         self.assertIn('Use this link to log in', email.body)
         url_search =re.search(r'http://.+/.+$', email.body)
         if not url_search:
-            self.fail(f'Could not foind url in email body:\n{email.body}')
+            self.fail(f'Could not found url in email body:\n{email.body}')
         url = url_search.group(0)
         self.assertIn(self.live_server_url, url)
 
